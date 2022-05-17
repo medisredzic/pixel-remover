@@ -37,7 +37,12 @@ def ex4(image_array: np.ndarray, offset: tuple, spacing: tuple):
     img_arr[:, :offset[0], :] = 0
     img_arr[:offset[1], :, :] = 0
 
-    return image_array
+    remaining_pixels = (np.sum(np.all(img_arr > 0, axis=2))) // 3
+
+    if remaining_pixels < 144:
+        raise ValueError(f'Remaining pixels can not be under 144! Remaining pixels: {remaining_pixels}')
+
+    return img_arr
 
 
 if __name__ == '__main__':
