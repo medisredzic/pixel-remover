@@ -1,5 +1,5 @@
 import numpy as np
-
+from PIL import Image
 
 def ex4(image_array: np.ndarray, offset: tuple, spacing: tuple):
 
@@ -23,3 +23,28 @@ def ex4(image_array: np.ndarray, offset: tuple, spacing: tuple):
 
     if not 2 <= spacing[0] <= 8 or not 2 <= spacing[1] <= 8:
         raise ValueError('Spacing can not be smaller than 2 or larger than 8')
+
+    img_arr = np.zeros_like(image_array)
+
+    for m in range(0, img_arr.shape[0]):
+        for n in range(0, img_arr.shape[1], spacing[1]):
+            img_arr[m, n, :] = image_array[m, n, :]
+
+    for m in range(0, img_arr.shape[1]):
+        for n in range(0, img_arr.shape[0], spacing[0]):
+            img_arr[n, m, :] = 0
+
+    img_arr[:, :offset[0], :] = 0
+    img_arr[:offset[1], :, :] = 0
+
+    return image_array
+
+
+if __name__ == '__main__':
+    img_path = 'img.jpg'
+    open_img = Image.open(img_path)
+    image_array = np.asarray(open_img)
+    arr = ex4(image_array, (2, 1), (2, 3))
+
+    img_fa = Image.fromarray(arr)
+    img_fa.save('img_after.jpg')
